@@ -2,17 +2,26 @@ package render
 
 import (
 	"bytes"
+	"github.com/jnav24/go-web/pkg/config"
 	"html/template"
 	"log"
 	"net/http"
 	"path/filepath"
 )
 
-func RenderTemplate(w http.ResponseWriter, tmpl string) {
-	tc, err := createTemplateCache()
+var app *config.AppConfig
 
-	if err != nil {
-		log.Fatal(err)
+func NewTemplate(a *config.AppConfig) {
+	app = a
+}
+
+func RenderTemplate(w http.ResponseWriter, tmpl string) {
+	var tc map[string]*template.Template
+
+	if app.UseCache {
+		tc = app.TemplateCache
+	} else {
+		tc, _ = CreateTemplateCache()
 	}
 
 	t, ok := tc[tmpl]
@@ -22,20 +31,16 @@ func RenderTemplate(w http.ResponseWriter, tmpl string) {
 	}
 
 	buf := new(bytes.Buffer)
-	err = t.Execute(buf, nil)
+	_ = t.Execute(buf, nil)
 
-	if err != nil {
-		log.Println(err)
-	}
-
-	_, err = buf.WriteTo(w)
+	_, err := buf.WriteTo(w)
 
 	if err != nil {
 		log.Println(err)
 	}
 }
 
-func createTemplateCache() (map[string]*template.Template, error) {
+func CreateTemplateCache() (map[string]*template.Template, error) {
 	myCache := make(map[string]*template.Template)
 
 	pages, err := filepath.Glob("./templates/*.page.tmpl")
