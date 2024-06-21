@@ -3,6 +3,7 @@ package render
 import (
 	"bytes"
 	"github.com/jnav24/go-web/pkg/config"
+	"github.com/jnav24/go-web/pkg/models"
 	"html/template"
 	"log"
 	"net/http"
@@ -15,7 +16,11 @@ func NewTemplate(a *config.AppConfig) {
 	app = a
 }
 
-func RenderTemplate(w http.ResponseWriter, tmpl string) {
+func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+	return td
+}
+
+func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
 	var tc map[string]*template.Template
 
 	if app.UseCache {
@@ -31,7 +36,7 @@ func RenderTemplate(w http.ResponseWriter, tmpl string) {
 	}
 
 	buf := new(bytes.Buffer)
-	_ = t.Execute(buf, nil)
+	_ = t.Execute(buf, AddDefaultData(td))
 
 	_, err := buf.WriteTo(w)
 

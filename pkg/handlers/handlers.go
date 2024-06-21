@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/jnav24/go-web/pkg/config"
+	"github.com/jnav24/go-web/pkg/models"
 	"github.com/jnav24/go-web/pkg/render"
 	"net/http"
 )
@@ -23,9 +24,14 @@ func NewHandlers(r *Repository) {
 }
 
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "home.page.tmpl")
+	render.RenderTemplate(w, "home.page.tmpl", &models.TemplateData{})
 }
 
 func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "about.page.tmpl")
+	stringMap := map[string]string{}
+	stringMap["test"] = "hello again"
+
+	render.RenderTemplate(w, "about.page.tmpl", &models.TemplateData{
+		StringMap: stringMap,
+	})
 }
