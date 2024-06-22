@@ -5,5 +5,13 @@
     <h1>This is the about page</h1>
 
     <p>From the template {{index .StringMap "test"}}</p>
+    <p>
+        Remote IP
+        {{if ne (index .StringMap "remote_ip") ""}}
+        {{index .StringMap "remote_ip"}}
+        {{else}}
+            I don't know. Go Home first.
+        {{end}}
+    </p>
 </div>
 {{end}}
