@@ -14,6 +14,7 @@ func useChiRouter() http.Handler {
 
 	mux.Use(middleware.Recoverer)
 	mux.Use(WriteToConsole)
+	mux.Use(NoSurf)
 
 	mux.Get("/", handlers.Repo.Home)
 	mux.Get("/about", handlers.Repo.About)
